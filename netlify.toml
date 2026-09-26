@@ -1,0 +1,39 @@
+[build]
+  publish   = "public"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[functions]
+  node_bundler = "esbuild"
+
+# ---------- security headers (all pages) ----------
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    X-Content-Type-Options    = "nosniff"
+    X-Frame-Options           = "DENY"
+    Referrer-Policy           = "strict-origin-when-cross-origin"
+    Permissions-Policy        = "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"
+    Cross-Origin-Opener-Policy = "same-origin"
+    Content-Security-Policy   = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-elem 'self' https://fonts.googleapis.com; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; upgrade-insecure-requests"
+
+# ---------- caching ----------
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"   # 7 days; CSS/JS links carry ?v=… — bump it when you change them
+
+[[headers]]
+  for = "/.well-known/security.txt"
+  [headers.values]
+    Content-Type = "text/plain; charset=utf-8"
+
+# ---------- redirects ----------
+[[redirects]]
+  from   = "/index.html"
+  to     = "/"
+  status = 301
+  force  = true
