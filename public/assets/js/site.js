@@ -76,7 +76,7 @@
   drawer.querySelectorAll('a').forEach(a=>a.addEventListener('click', closeDrawer));
   document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape' && drawer.classList.contains('open')) closeDrawer(); });
 
-  // contact form -> Netlify Forms (AJAX submit; falls back to /thanks.html without JS)
+  // contact form -> FormSubmit.co (AJAX submit; falls back to normal POST without JS)
   const contactFormEl = document.getElementById('contactForm');
   const formNoteEl = document.getElementById('formNote');
   if (contactFormEl) {
@@ -86,10 +86,10 @@
       submitBtn.disabled = true;
       formNoteEl.textContent = 'Sending…';
       try {
-        const res = await fetch('/', {
+        const res = await fetch('https://formsubmit.co/ajax/info@libertyresearch.com.ng', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams(new FormData(contactFormEl)).toString(),
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(Object.fromEntries(new FormData(contactFormEl))),
         });
         if (!res.ok) throw new Error('HTTP ' + res.status);
         formNoteEl.textContent = 'Thank you — your message has been sent. We usually reply within two working days.';
